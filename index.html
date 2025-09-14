@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRAZY LINE - فتح البرنامج</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        .logo {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            margin: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .status {
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        .status.checking {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: right;
+        }
+        .instructions h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .instructions ol {
+            color: #666;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎮</div>
+        <h1>CRAZY LINE</h1>
+        <p>نظام إدارة محل البلايستيشن</p>
+        
+        <div id="status" class="status checking">
+            جاري التحقق من حالة الخادم...
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <a href="http://localhost:8000" class="btn" id="openBtn" style="display: none;">
+                🚀 فتح البرنامج
+            </a>
+        </div>
+        
+        <div class="instructions">
+            <h3>تعليمات التشغيل:</h3>
+            <ol>
+                <li>تأكد من تشغيل الخادم المحلي أولاً</li>
+                <li>شغل ملف <strong>start.bat</strong> أو <strong>start.ps1</strong></li>
+                <li>انتظر حتى يبدأ الخادم</li>
+                <li>انقر على "فتح البرنامج" أعلاه</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // التحقق من حالة الخادم
+        async function checkServer() {
+            const statusDiv = document.getElementById('status');
+            const openBtn = document.getElementById('openBtn');
+            
+            try {
+                const response = await fetch('http://localhost:8000', { 
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ الخادم يعمل بنجاح! يمكنك فتح البرنامج الآن';
+                openBtn.style.display = 'inline-block';
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ الخادم غير متاح. يرجى تشغيل start.bat أو start.ps1 أولاً';
+                openBtn.style.display = 'none';
+                
+                // إعادة المحاولة بعد 3 ثوان
+                setTimeout(checkServer, 3000);
+            }
+        }
+        
+        // بدء التحقق
+        checkServer();
+        
+        // التحقق كل 5 ثوان
+        setInterval(checkServer, 5000);
+    </script>
+</body>
+</html>
